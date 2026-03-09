@@ -481,15 +481,15 @@ Integrate your MCP server with an AI assistant and provide proof:
 
 Before submitting, verify:
 
-- [ ] Server starts without errors: `uv run python server.py`
-- [ ] All 3 resources return valid data
-- [ ] All 3 tools call external APIs successfully
-- [ ] Code follows course standards: `uv run ruff check .`
-- [ ] **Testing evidence included:**
-  - [ ] Option A: `test_results.log` file with passing tests, OR
-  - [ ] Option B: `screenshots/` folder with MCP Inspector screenshots
-- [ ] All changes committed and pushed to GitHub
-- [ ] **(Bonus)** Screenshots of AI assistant using your server
+- [X] Server starts without errors: `uv run python server.py`
+- [X] All 3 resources return valid data
+- [X] All 3 tools call external APIs successfully
+- [X] Code follows course standards: `uv run ruff check .`
+- [X] **Testing evidence included:**
+  - [X] Option A: `test_results.log` file with passing tests, OR
+  - [X] Option B: `screenshots/` folder with MCP Inspector screenshots
+- [X] All changes committed and pushed to GitHub
+- [X] **(Bonus)** Screenshots of AI assistant using your server
 
 ---
 
