@@ -36,4 +36,4 @@ htmlcov/
 Thumbs.db
 
 # MCP
-.mcp.json
+# .mcp.json
