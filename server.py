@@ -196,7 +196,22 @@ def get_country_info(country_code: str) -> dict:
     """
     logger.info(f"Fetching country info for: {country_code}")
     # TODO: Implement using _fetch_rest_countries()
-    pass
+    try:
+        data = _fetch_rest_countries(country_code)
+        return {
+            "name": data.get("name", {}).get("common", "Unknown"),
+            "capital": data.get("capital", ["Unknown"])[0],
+            "region": data.get("region", "Unknown"),
+            "subregion": data.get("subregion", "Unknown"),
+            "languages": list(data.get("languages", {}).values()),
+            "currencies": list(data.get("currencies", {}).keys()),
+            "population": data.get("population", 0),
+            "flag": data.get("flag", ""),
+        }
+    except httpx.HTTPStatusError as e:
+        return {"error": f"Country '{country_code}' not found", "detail": str(e)}
+    except Exception as e:
+        return {"error": "Failed to fetch country info", "detail": str(e)}
 
 
 @mcp.tool()
@@ -237,7 +252,26 @@ def get_live_indicator(
     """
     logger.info(f"Fetching {indicator} for {country_code} in {year}")
     # TODO: Implement using _fetch_world_bank_indicator()
-    pass
+    try:
+        records = _fetch_world_bank_indicator(country_code, indicator, year)
+        
+        match = next((r for r in records if r.get("date") == str(year)), None)
+        
+        if not match:
+            return {"error": f"No data for {indicator} in {country_code} for year {year}"}
+        
+        return {
+            "country": country_code.upper(),
+            "country_name": match.get("country", {}).get("value", "Unknown"),
+            "indicator": indicator,
+            "indicator_name": match.get("indicator", {}).get("value", "Unknown"),
+            "year": year,
+            "value": match.get("value"),
+        }
+    except httpx.HTTPStatusError as e:
+        return {"error": f"World Bank API error for '{country_code}'", "detail": str(e)}
+    except Exception as e:
+        return {"error": "Failed to fetch indicator", "detail": str(e)}
 
 
 @mcp.tool()
@@ -271,8 +305,20 @@ def compare_countries(
     """
     logger.info(f"Comparing {indicator} for countries: {country_codes}")
     # TODO: Implement - call get_live_indicator for each country
-    pass
-
+    results = []
+    for code in country_codes:
+        try:
+            result = get_live_indicator(code, indicator, year)
+            results.append(result)
+        except Exception as e:
+            results.append({
+                "country": code.upper(),
+                "indicator": indicator,
+                "year": year,
+                "value": None,
+                "error": str(e),
+            })
+    return results
 
 # =============================================================================
 # MAIN
